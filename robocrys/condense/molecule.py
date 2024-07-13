@@ -8,7 +8,7 @@ import warnings
 
 from monty.serialization import loadfn
 from importlib.resources import files as import_resource_file
-from pubchempy import BadRequestError, get_compounds
+from pubchempy import BadRequestError, PubChemHTTPError, get_compounds
 from pymatgen.analysis.graphs import MoleculeGraph
 from pymatgen.io.babel import BabelMolAdaptor
 
@@ -92,6 +92,8 @@ class MoleculeNamer:
             comp = get_compounds(smiles, namespace="smiles")[0]
 
         except (BadRequestError, IndexError):
+            return None
+        except (PubChemHTTPError, IndexError):
             return None
 
         traditional = comp.synonyms[0] if comp.synonyms else None
